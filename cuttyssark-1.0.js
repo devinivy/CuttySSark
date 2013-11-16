@@ -280,29 +280,27 @@
 	    var ownerNode = styleSheet.ownerNode || styleSheet.owningElement;
 	    
             if (ownerNode.getAttribute("data-cutty-bypass") === null &&
+            	ownerNode.getAttribute("data-cutty-processed") === null &&
 		styleSheet[cssRules] && styleSheet[cssRules].length > 0) {
-            
-                if (ownerNode.getAttribute("data-cutty-processed") === null) {
-                
-                    var i, j, rule;
+
+                var i, j, rule;
                     
-                    for (i = 0; i < styleSheet[cssRules].length; i++) {
-                        rule = styleSheet[cssRules][i];
-                        
-                        // check nested rules in media queries etc
-                        if (rule[cssRules] && rule[cssRules].length > 0) {
-                            for (j = 0; j < rule[cssRules].length; j++) {
-                                processSelector(rule[cssRules][j].selectorText, rule[cssRules][j].style);
-                            }
-                        }
-                        else {
-                            processSelector(rule.selectorText, rule.style);
+                for (i = 0; i < styleSheet[cssRules].length; i++) {
+                    rule = styleSheet[cssRules][i];
+
+                   // check nested rules in media queries etc
+                   if (rule[cssRules] && rule[cssRules].length > 0) {
+                       for (j = 0; j < rule[cssRules].length; j++) {
+                            processSelector(rule[cssRules][j].selectorText, rule[cssRules][j].style);
                         }
                     }
-                    
-                    // flag the style sheet as processed
-                    ownerNode.setAttribute("data-cutty-processed", "");
-                }
+                    else {
+                        processSelector(rule.selectorText, rule.style);
+                    }
+                 }
+
+                // flag the style sheet as processed
+                ownerNode.setAttribute("data-cutty-processed", "");
             }
         };
         
